@@ -17,6 +17,7 @@ public class Menu {
 
     Dificultad dificultad = new Dificultad();
     Parametros parametros = new Parametros();
+    Jugador[] jugador;
 
     public void menuPrincipal() {
         int opcion;
@@ -55,12 +56,12 @@ public class Menu {
 
             switch (opcion) {
                 case 1:
-                    dificultad.setDificultad("facil");
+                    dificultad.setDificultad("Facil");
                     System.out.println("");
                     menuPrincipal();
                     break;
                 case 2:
-                    dificultad.setDificultad("dificil");
+                    dificultad.setDificultad("Dificil");
                     System.out.println("");
                     menuPrincipal();
                     break;
@@ -75,26 +76,43 @@ public class Menu {
     }
 
     public void menuParametros() {
-        int opcion, jugadores, subidas, bajones;
+        int opcion, cant_jugadores, cant_subidas, cant_bajones;
+        char simbolo;
+
         do {
             System.out.println("\nSeleccione una opcion \n1. Jugadores \n2. Subidas y bajones \n3.Regresar");
             opcion = teclado.nextInt();
 
             switch (opcion) {
                 case 1:
-                    if (dificultad.getDificultad().equals("facil")) {
-                        do{
+                    if (dificultad.getDificultad().equals("Facil")) {
+                        do {
                             System.out.print("\nDificultad: " + dificultad.getDificultad());
                             System.out.print("\nIngrese la cantidad de jugadores (De 2 a 3): ");
-                            parametros.setJugadores(jugadores = teclado.nextInt());
-                        } while (parametros.getJugadores() < 2 || parametros.getJugadores() > 3);
+                            parametros.setCantJugadores(cant_jugadores = teclado.nextInt());
+                        } while (parametros.getCantJugadores() < 2 || parametros.getCantJugadores() > 3);
                     } else {
-                        do{
+                        do {
                             System.out.print("\nDificultad: " + dificultad.getDificultad());
                             System.out.print("\nIngrese la cantidad de jugadores (De 2 a 4): ");
-                            parametros.setJugadores(jugadores = teclado.nextInt());
-                        } while (parametros.getJugadores() < 2 || parametros.getJugadores() > 4);
+                            parametros.setCantJugadores(cant_jugadores = teclado.nextInt());
+                        } while (parametros.getCantJugadores() < 2 || parametros.getCantJugadores() > 4);
                     }
+
+                    jugador = new Jugador[cant_jugadores];
+                    
+                    int i;
+                    for (i = 0; i < jugador.length; i++) {
+                        if (jugador[i] == null) {
+                            jugador[i] = new Jugador();
+                            jugador[i].setNumero_jugador((i + 1));
+                            System.out.print("Ingrese el simbolo que represetara al jugador " + (i+1) + ": ");
+                            simbolo = teclado.next().charAt(0);
+                            jugador[i].setSimbolo(simbolo);
+                        }
+                    }
+
+                    menuParametros();
                     break;
                 case 2:
                     dificultad.setDificultad("dificil");
