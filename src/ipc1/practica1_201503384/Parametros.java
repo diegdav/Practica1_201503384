@@ -10,20 +10,20 @@ package ipc1.practica1_201503384;
  * @author diego
  */
 public class Parametros {
-    private int jugadores, subidas, bajones;
+    private int cant_jugadores, subidas, bajones;
 
     /**
      * @return the jugadores
      */
-    public int getJugadores() {
-        return jugadores;
+    public int getCantJugadores() {
+        return cant_jugadores;
     }
 
     /**
-     * @param jugadores the jugadores to set
+     * @param cant_jugadores the jugadores to set
      */
-    public void setJugadores(int jugadores) {
-        this.jugadores = jugadores;
+    public void setCantJugadores(int cant_jugadores) {
+        this.cant_jugadores = cant_jugadores;
     }
 
     /**
