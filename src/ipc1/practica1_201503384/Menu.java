@@ -17,7 +17,13 @@ public class Menu {
 
     Dificultad dificultad = new Dificultad();
     Parametros parametros = new Parametros();
+    Tablero tablero = new Tablero();
     Jugador[] jugador;
+    int contador_simbolo;
+
+    public Menu() {
+        contador_simbolo = 1;
+    }
 
     public void menuPrincipal() {
         int opcion;
@@ -31,13 +37,14 @@ public class Menu {
                     break;
                 case 2:
                     menuParametros();
+                    menuPrincipal();
                     break;
                 case 3:
                     if (dificultad.getDificultad() == null) {
                         System.out.println("\nDebe de seleccionar primer la dificultad.\n");
                         menuPrincipal();
                     } else {
-                        System.out.println("Inicia el juego");
+                        tablero.crearFacil();
                     }
                     break;
                 case 4:
@@ -76,8 +83,7 @@ public class Menu {
     }
 
     public void menuParametros() {
-        int opcion, cant_jugadores, cant_subidas, cant_bajones;
-        char simbolo;
+        int opcion;
 
         do {
             System.out.println("\nSeleccione una opcion \n1. Jugadores \n2. Subidas y bajones \n3.Regresar");
@@ -85,39 +91,11 @@ public class Menu {
 
             switch (opcion) {
                 case 1:
-                    if (dificultad.getDificultad().equals("Facil")) {
-                        do {
-                            System.out.print("\nDificultad: " + dificultad.getDificultad());
-                            System.out.print("\nIngrese la cantidad de jugadores (De 2 a 3): ");
-                            parametros.setCantJugadores(cant_jugadores = teclado.nextInt());
-                        } while (parametros.getCantJugadores() < 2 || parametros.getCantJugadores() > 3);
-                    } else {
-                        do {
-                            System.out.print("\nDificultad: " + dificultad.getDificultad());
-                            System.out.print("\nIngrese la cantidad de jugadores (De 2 a 4): ");
-                            parametros.setCantJugadores(cant_jugadores = teclado.nextInt());
-                        } while (parametros.getCantJugadores() < 2 || parametros.getCantJugadores() > 4);
-                    }
-
-                    jugador = new Jugador[cant_jugadores];
-                    
-                    int i;
-                    for (i = 0; i < jugador.length; i++) {
-                        if (jugador[i] == null) {
-                            jugador[i] = new Jugador();
-                            jugador[i].setNumero_jugador((i + 1));
-                            System.out.print("Ingrese el simbolo que represetara al jugador " + (i+1) + ": ");
-                            simbolo = teclado.next().charAt(0);
-                            jugador[i].setSimbolo(simbolo);
-                        }
-                    }
-
-                    menuParametros();
+                    crearJugadores(dificultad.getDificultad());
                     break;
                 case 2:
-                    dificultad.setDificultad("dificil");
-                    System.out.println("");
-                    menuPrincipal();
+                    crearSubidasBajones(dificultad.getDificultad());
+                    menuParametros();
                     break;
                 case 3:
                     menuPrincipal();
@@ -127,5 +105,81 @@ public class Menu {
                     System.out.println("\nOpcion invalida. Vuelva a intentarlo.");
             }
         } while (opcion < 1 || opcion > 3);
+    }
+
+    public void crearJugadores(String dificultad) {
+        int cant_jugadores;
+
+        if (dificultad.equals("Facil")) {
+            do {
+                System.out.print("\nDificultad: " + dificultad);
+                System.out.print("\nIngrese la cantidad de jugadores (De 2 a 3): ");
+                parametros.setCantJugadores(cant_jugadores = teclado.nextInt());
+            } while (parametros.getCantJugadores() < 2 || parametros.getCantJugadores() > 3);
+        } else {
+            do {
+                System.out.print("\nDificultad: " + dificultad);
+                System.out.print("\nIngrese la cantidad de jugadores (De 2 a 4): ");
+                parametros.setCantJugadores(cant_jugadores = teclado.nextInt());
+            } while (parametros.getCantJugadores() < 2 || parametros.getCantJugadores() > 4);
+        }
+
+        jugador = new Jugador[cant_jugadores];
+        crearSimbolo();
+    }
+
+    public void crearSimbolo() {
+        char simbolo;
+        int i, j;
+
+        for (i = 0; i < jugador.length; i++) {
+            if (jugador[i] == null) {
+                jugador[i] = new Jugador();
+            }
+        }
+
+        for (i = 0; i < jugador.length; i++) {
+            System.out.print("Ingrese el simbolo que representa al jugador " + contador_simbolo + ": ");
+            simbolo = teclado.next().charAt(0);
+
+            if (contador_simbolo == 1) {
+                jugador[contador_simbolo - 1].setNumero_jugador(contador_simbolo);
+                jugador[contador_simbolo - 1].setSimbolo(simbolo);
+                contador_simbolo++;
+            } else {
+                for (j = 0; j < i; j++) {
+                    if (simbolo == jugador[j].getSimbolo()) {
+                        System.out.print("\nEste simbolo ya esta siendo utilizado por otro jugador. Ingrese otro.");
+                        System.out.println("");
+                        crearSimbolo();
+                    } else {
+                        jugador[contador_simbolo - 1].setNumero_jugador(contador_simbolo);
+                        jugador[contador_simbolo - 1].setSimbolo(simbolo);
+                        contador_simbolo++;
+                        break;
+                    }
+                }
+            }
+        }
+        contador_simbolo = 1;
+        menuParametros();
+    }
+
+    public void crearSubidasBajones(String dificultad) {
+        int cant_subidas, cant_bajones;
+
+        if (dificultad.equals("Facil")) {
+            do {
+                System.out.print("\nDificultad: " + dificultad);
+                System.out.print("\nIngrese la cantidad de subidas (De 5 a 10): ");
+                parametros.setSubidas(cant_subidas = teclado.nextInt());
+            } while (cant_subidas < 5 || cant_subidas > 10);
+        } else {
+            do {
+                System.out.print("\nDificultad: " + dificultad);
+                System.out.print("\nIngrese la cantidad de subidas (De 20 a 40): ");
+                parametros.setBajones(cant_bajones = teclado.nextInt());
+            } while (cant_bajones < 20 || cant_bajones > 40);
+        }
     }
 }
